@@ -22,3 +22,13 @@ export function deleteProjectObject(name) {
   delete list[name];
   window.localStorage.setItem('data', JSON.stringify(list));
 }
+
+export function getPageTypeData(type) {
+  if (type === 'list') {
+    return {
+      searchFormColumns: [],
+      tableColumns: [],
+      tableButtons: [],
+    };
+  }
+}

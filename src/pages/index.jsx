@@ -129,7 +129,12 @@ export default function IndexPage() {
               />
             </ModalForm>
           </div>
-          <Table rowKey="name" columns={columns} dataSource={data} />
+          <Table
+            rowKey="name"
+            columns={columns}
+            dataSource={data}
+            pagination={false}
+          />
         </div>
       </Content>
     </Layout>
