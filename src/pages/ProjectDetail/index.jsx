@@ -8,6 +8,7 @@ import {
 } from '@ant-design/pro-components';
 import { getProjectObject, getPageTypeData } from '@/utils';
 import Menu from './components/Menu';
+import ListPageContent from './components/ListPageContent';
 import styles from './index.less';
 
 const { Sider, Content, Header } = Layout;
@@ -16,14 +17,14 @@ export default function ProjectDetail(props) {
   const [title, setTitle] = useState('');
   const [addRouteVisible, setAddRouteVisible] = useState(false);
   const [routes, setRoutes] = useState([]);
+  const [currentRoute, setCurrentRoute] = useState({});
   const parentRoute = useRef();
 
   const selectRoute = (route) => {
-    console.log(route);
+    setCurrentRoute(route);
   };
 
   const addRoute = (parantRoute) => {
-    console.log(parantRoute);
     parentRoute.current = parantRoute;
     setAddRouteVisible(true);
   };
@@ -50,7 +51,11 @@ export default function ProjectDetail(props) {
             />
           </div>
         </Sider>
-        <Content>11</Content>
+        <Content>
+          {currentRoute.pageType === 'list' && (
+            <ListPageContent route={currentRoute} />
+          )}
+        </Content>
       </Layout>
 
       <ModalForm
@@ -75,6 +80,7 @@ export default function ProjectDetail(props) {
             newRoute.component = `./${componentName}`;
             newRoute.content = getPageTypeData(pageType);
             newRoute.path = path;
+            newRoute.pageType = pageType;
           }
           if (type === 2) {
             newRoute.routes = [];
