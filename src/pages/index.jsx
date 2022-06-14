@@ -11,6 +11,7 @@ import {
 } from '@/utils';
 import 'antd/dist/antd.css';
 import styles from './index.less';
+import '@/assets/css/global.less';
 
 const { Header, Content } = Layout;
 
