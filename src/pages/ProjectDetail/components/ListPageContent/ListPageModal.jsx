@@ -14,7 +14,7 @@ export default function ListPageModal(props) {
     <div className={styles.listPage}>
       <div className={styles.listPageContainer}>
         <div className={styles.listPageBox}>
-          <span className={styles.listPageTag}>筛选</span>
+          <span className={styles.listPageTag}>筛选表单</span>
           <CreateForm
             searchFormColumns={searchFormColumns}
             setSearchFormColumns={setSearchFormColumns}
