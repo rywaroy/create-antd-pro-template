@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Input, Button, Row, Col, Form, Select, DatePicker } from 'antd';
-import { PlusOutlined } from '@ant-design/icons';
+import { PlusOutlined, DeleteOutlined } from '@ant-design/icons';
 import styles from './index.less';
 
 const { RangePicker } = DatePicker;
@@ -37,6 +37,12 @@ export default function CreateForm(props) {
     setFormList(newFormList);
   };
 
+  const formListDelete = (index) => {
+    const list = [...searchFormColumns];
+    list.splice(index, 1);
+    setSearchFormColumns(list);
+  };
+
   return (
     <div className={styles.createForm}>
       <div className={styles.createFormContent}>
@@ -44,10 +50,16 @@ export default function CreateForm(props) {
           {searchFormColumns.map((item, index) => (
             <Col span={8} key={index}>
               <Form.Item label={item.title}>
-                {item.valueType === 'text' && <Input />}
-                {item.valueType === 'select' && <Select />}
-                {item.valueType === 'dateRange' && <RangePicker />}
-                {item.valueType === 'date' && <DatePicker />}
+                <div className={styles.createFormItem}>
+                  {item.valueType === 'text' && <Input />}
+                  {item.valueType === 'select' && <Select />}
+                  {item.valueType === 'dateRange' && <RangePicker />}
+                  {item.valueType === 'date' && <DatePicker />}
+                  <DeleteOutlined
+                    className={styles.createFormDelete}
+                    onClick={() => formListDelete(index)}
+                  />
+                </div>
               </Form.Item>
             </Col>
           ))}
