@@ -1,12 +1,12 @@
 import { useEffect, useState, useRef } from 'react';
-import { Layout } from 'antd';
+import { Layout, Button } from 'antd';
 import {
   ModalForm,
   ProFormText,
   ProFormRadio,
   ProFormSelect,
 } from '@ant-design/pro-components';
-import { getProjectObject, getPageTypeData } from '@/utils';
+import { getProjectObject, getPageTypeData, setProjectObject } from '@/utils';
 import Menu from './components/Menu';
 import ListPageContent from './components/ListPageContent';
 import styles from './index.less';
@@ -29,6 +29,13 @@ export default function ProjectDetail(props) {
     setAddRouteVisible(true);
   };
 
+  const saveProject = () => {
+    const data = getProjectObject();
+    const detail = data[props.match.params.name];
+    detail.routes = routes;
+    setProjectObject(detail);
+  };
+
   useEffect(() => {
     const data = getProjectObject();
     const detail = data[props.match.params.name];
@@ -39,7 +46,12 @@ export default function ProjectDetail(props) {
   return (
     <Layout className={styles.content}>
       <Header>
-        <h1 className={styles.title}>{title}</h1>
+        <div className={styles.top}>
+          <h1 className={styles.title}>{title}</h1>
+          <Button type="primary" onClick={saveProject}>
+            保存
+          </Button>
+        </div>
       </Header>
       <Layout>
         <Sider>
