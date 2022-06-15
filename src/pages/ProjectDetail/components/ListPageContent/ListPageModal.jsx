@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { Button } from 'antd';
-// import CreateTable from '@/components/CreateTable';
+import CreateTable from './CreateTable';
 import CreateForm from './CreateForm';
+import CreateButtons from './CreateButtons';
 import styles from './index.less';
 
 export default function ListPageModal(props) {
@@ -9,6 +10,8 @@ export default function ListPageModal(props) {
   const [searchFormColumns, setSearchFormColumns] = useState(
     content.searchFormColumns,
   );
+  const [tableButtons, setTableButtons] = useState(content.tableButtons);
+  const [tableColumns, setTableColumns] = useState(content.tableColumns);
 
   return (
     <div className={styles.listPage}>
@@ -21,8 +24,18 @@ export default function ListPageModal(props) {
           />
         </div>
         <div className={styles.listPageBox}>
+          <span className={styles.listPageTag}>操作按钮</span>
+          <CreateButtons
+            tableButtons={tableButtons}
+            setTableButtons={setTableButtons}
+          />
+        </div>
+        <div className={styles.listPageBox}>
           <span className={styles.listPageTag}>表格</span>
-          {/* <CreateTable /> */}
+          <CreateTable
+            tableColumns={tableColumns}
+            setTableColumns={setTableColumns}
+          />
         </div>
       </div>
       <div className="ant-modal-footer">
