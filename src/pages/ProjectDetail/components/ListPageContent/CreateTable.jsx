@@ -1,18 +1,21 @@
 import { useState, useRef } from 'react';
-import { Table, Button, Input } from 'antd';
-import { ModalForm, ProFormDigit } from '@ant-design/pro-components';
+import { Table, Button, Input, Modal } from 'antd';
+import {
+  ModalForm,
+  ProFormDigit,
+  ProFormText,
+} from '@ant-design/pro-components';
+import { EditOutlined } from '@ant-design/icons';
 import styles from './index.less';
 
 export default function CreateTable(props) {
   const { tableColumns, setTableColumns } = props;
-  const tableColumnsRef = useRef(tableColumns);
   const [dataSource, setDataSource] = useState([{ id: 1 }, { id: 2 }]);
 
   const editTitle = (value, index) => {
-    const newTableColumns = [...tableColumnsRef.current];
-    newTableColumns[index].titleText = value;
+    const newTableColumns = [...tableColumns];
+    newTableColumns[index].title = value;
     setTableColumns(newTableColumns);
-    tableColumnsRef.current = newTableColumns;
   };
 
   const addColumn = (number) => {
@@ -22,10 +25,7 @@ export default function CreateTable(props) {
     for (let i = 0; i < number; i++) {
       const name = `标题${len + i + 1}`;
       const column = {
-        title: () => (
-          <Input onChange={(e) => editTitle(e.target.value, len + i)} />
-        ),
-        titleText: name,
+        title: name,
         dataIndex: name,
         hideInSearch: true,
       };
@@ -35,7 +35,6 @@ export default function CreateTable(props) {
       }
     }
     setTableColumns(newTableColumns);
-    tableColumnsRef.current = newTableColumns;
     setDataSource(newDataSource);
   };
 
@@ -59,8 +58,51 @@ export default function CreateTable(props) {
             rules={[{ required: true, message: '请输入数量' }]}
           />
         </ModalForm>
+        <Button type="primary">添加操作</Button>
       </div>
-      <Table columns={tableColumns} dataSource={dataSource} rowKey="id" />
+      {tableColumns.length > 0 && (
+        <Table
+          columns={tableColumns}
+          dataSource={dataSource}
+          rowKey="id"
+          components={{
+            header: {
+              cell: (cellProps) => {
+                const { children, ...rest } = cellProps;
+                const text = children[1];
+                return (
+                  <th {...rest}>
+                    {children}
+                    <ModalForm
+                      title="修改文本"
+                      width={400}
+                      trigger={<EditOutlined />}
+                      autoFocusFirstInput
+                      onFinish={(values) => {
+                        const newTableColumns = [...tableColumns];
+                        newTableColumns.forEach((item) => {
+                          if (item.title === text) {
+                            item.title = values.title;
+                          }
+                        });
+                        setTableColumns(newTableColumns);
+                        return true;
+                      }}
+                    >
+                      <ProFormText
+                        name="title"
+                        label="文本"
+                        rules={[{ required: true, message: '请输入文本' }]}
+                      />
+                    </ModalForm>
+                  </th>
+                );
+              },
+            },
+          }}
+        />
+      )}
+      <Modal title="添加操作"></Modal>
     </div>
   );
 }
