@@ -7,10 +7,6 @@ import {
 import { PlusOutlined } from '@ant-design/icons';
 import styles from './index.less';
 
-const iconMap = {
-  PlusOutlined: <PlusOutlined />,
-};
-
 export default function CreateButtons(props) {
   const { tableButtons, setTableButtons } = props;
 
@@ -34,11 +30,7 @@ export default function CreateButtons(props) {
             </span>
           }
         >
-          <Button
-            type={item.type}
-            icon={item.icon}
-            className={styles.createButtonItem}
-          >
+          <Button type={item.type} className={styles.createButtonItem}>
             {item.text}
           </Button>
         </Popover>
@@ -50,15 +42,11 @@ export default function CreateButtons(props) {
         trigger={<Button icon={<PlusOutlined />}></Button>}
         autoFocusFirstInput
         onFinish={(values) => {
-          const { text, type = 'default', icon } = values;
+          const { text, type = 'default' } = values;
           const buttons = {
             text,
             type,
           };
-          if (icon) {
-            buttons.icon = iconMap[icon];
-            buttons.iconText = `<${icon} />`;
-          }
           setTableButtons([...tableButtons, buttons]);
           return true;
         }}
@@ -76,11 +64,6 @@ export default function CreateButtons(props) {
             { value: 'primary', label: '主要 primary' },
             { value: 'default', label: '默认 default' },
           ]}
-        />
-        <ProFormSelect
-          name="icon"
-          label="按钮图标"
-          options={[{ value: 'PlusOutlined', label: '+' }]}
         />
       </ModalForm>
     </div>
