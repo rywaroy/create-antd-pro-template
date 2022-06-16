@@ -35,7 +35,20 @@ export default function CreateTable(props) {
   };
 
   const addOpt = (data) => {
-    console.log(data);
+    const newTableColumns = [...tableColumns];
+    newTableColumns.push({
+      ...data,
+      title: '操作',
+      dataIndex: 'action',
+      render: () =>
+        data.opts.map((item, index) => (
+          <Button type="link" key={index}>
+            {item}
+          </Button>
+        )),
+    });
+    setTableColumns(newTableColumns);
+    setActionVisible(false);
   };
 
   return (
@@ -52,6 +65,7 @@ export default function CreateTable(props) {
           }}
         >
           <ProFormDigit
+            initialValue={5}
             name="number"
             label="表格列数量"
             fieldProps={{ min: 1, precision: 0 }}

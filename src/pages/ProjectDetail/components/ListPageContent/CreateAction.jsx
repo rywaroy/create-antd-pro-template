@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Button, Form, Radio, Input } from 'antd';
+import { Button, Form, Radio, Input, InputNumber } from 'antd';
 import { DeleteOutlined } from '@ant-design/icons';
 import styles from './index.less';
 
@@ -7,6 +7,7 @@ export default function CreateAction(props) {
   const { onCancel, onOk } = props;
 
   const [fixed, setFixed] = useState(false);
+  const [width, setWidth] = useState(150);
   const [opts, setOpts] = useState([]);
 
   const optInputChange = (text, index) => {
@@ -28,6 +29,7 @@ export default function CreateAction(props) {
   const submit = () => {
     const data = {
       fixed,
+      width,
       opts: opts.filter((item) => item),
     };
     onOk(data);
@@ -45,6 +47,14 @@ export default function CreateAction(props) {
               { label: 'right', value: 'right' },
               { label: 'left', value: 'left' },
             ]}
+          />
+        </Form.Item>
+        <Form.Item label="width">
+          <InputNumber
+            value={width}
+            precision={0}
+            min={0}
+            onChange={(number) => setWidth(number)}
           />
         </Form.Item>
         <div>
