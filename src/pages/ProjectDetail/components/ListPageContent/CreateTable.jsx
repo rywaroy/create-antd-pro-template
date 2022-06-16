@@ -6,17 +6,13 @@ import {
   ProFormText,
 } from '@ant-design/pro-components';
 import { EditOutlined } from '@ant-design/icons';
+import CreateAction from './CreateAction';
 import styles from './index.less';
 
 export default function CreateTable(props) {
   const { tableColumns, setTableColumns } = props;
   const [dataSource, setDataSource] = useState([{ id: 1 }, { id: 2 }]);
-
-  const editTitle = (value, index) => {
-    const newTableColumns = [...tableColumns];
-    newTableColumns[index].title = value;
-    setTableColumns(newTableColumns);
-  };
+  const [actionVisible, setActionVisible] = useState(false);
 
   const addColumn = (number) => {
     const newTableColumns = [...tableColumns];
@@ -36,6 +32,10 @@ export default function CreateTable(props) {
     }
     setTableColumns(newTableColumns);
     setDataSource(newDataSource);
+  };
+
+  const addOpt = (data) => {
+    console.log(data);
   };
 
   return (
@@ -58,7 +58,9 @@ export default function CreateTable(props) {
             rules={[{ required: true, message: '请输入数量' }]}
           />
         </ModalForm>
-        <Button type="primary">添加操作</Button>
+        <Button type="primary" onClick={() => setActionVisible(true)}>
+          添加操作
+        </Button>
       </div>
       {tableColumns.length > 0 && (
         <Table
@@ -102,7 +104,18 @@ export default function CreateTable(props) {
           }}
         />
       )}
-      <Modal title="添加操作"></Modal>
+      <Modal
+        title="添加操作"
+        visible={actionVisible}
+        okText="确定"
+        cancelText="取消"
+        wrapClassName="custom-modal"
+        destroyOnClose={true}
+        footer={null}
+        onCancel={() => setActionVisible(false)}
+      >
+        <CreateAction onCancel={() => setActionVisible(false)} onOk={addOpt} />
+      </Modal>
     </div>
   );
 }
