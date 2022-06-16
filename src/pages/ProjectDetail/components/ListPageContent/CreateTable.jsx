@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { Table, Button, Input, Modal } from 'antd';
 import {
   ModalForm,
@@ -26,9 +26,6 @@ export default function CreateTable(props) {
         hideInSearch: true,
       };
       newTableColumns.push(column);
-      for (let j = 0; j < newDataSource.length; j++) {
-        newDataSource[j][name] = `测试数据${j + 1}`;
-      }
     }
     setTableColumns(newTableColumns);
     setDataSource(newDataSource);
@@ -39,6 +36,7 @@ export default function CreateTable(props) {
     newTableColumns.push({
       ...data,
       title: '操作',
+      hideInSearch: true,
       dataIndex: 'action',
       render: () =>
         data.opts.map((item, index) => (
@@ -51,13 +49,27 @@ export default function CreateTable(props) {
     setActionVisible(false);
   };
 
+  useEffect(() => {
+    const newData = [{ id: 1 }, { id: 2 }];
+    tableColumns.forEach((item) => {
+      newData.forEach((data) => {
+        data[item.dataIndex] = `测试数据${data.id}`;
+      });
+    });
+    setDataSource(newData);
+  }, [tableColumns]);
+
   return (
     <div className={styles.createTable}>
       <div className={styles.createTableButtons}>
         <ModalForm
           title="批量添加"
           width={400}
-          trigger={<Button type="primary">批量添加</Button>}
+          trigger={
+            <Button type="primary" style={{ marginRight: '10px' }}>
+              批量添加
+            </Button>
+          }
           autoFocusFirstInput
           onFinish={(values) => {
             addColumn(values.number);
