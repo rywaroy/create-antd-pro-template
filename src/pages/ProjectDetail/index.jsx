@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from 'react';
-import { Layout, Button } from 'antd';
+import { Layout, Button, message } from 'antd';
 import {
   ModalForm,
   ProFormText,
@@ -34,6 +34,28 @@ export default function ProjectDetail(props) {
     const detail = data[props.match.params.name];
     detail.routes = routes;
     setProjectObject(detail);
+    message.success('保存成功');
+  };
+
+  const updateRoute = (data) => {
+    const newCurrentRoute = { ...currentRoute };
+    newCurrentRoute.content = data;
+    setCurrentRoute(newCurrentRoute);
+    const newRoutes = [...routes];
+
+    const setRoute = (id, routes) => {
+      for (let i = 0; i < routes.length; i++) {
+        if (routes[i].id === id) {
+          routes[i].content = data;
+          break;
+        }
+        if (routes[i].routes) {
+          setRoute(id, routes[i].routes);
+        }
+      }
+    };
+    setRoute(currentRoute.id, newRoutes);
+    setRoutes(newRoutes);
   };
 
   useEffect(() => {
@@ -65,7 +87,7 @@ export default function ProjectDetail(props) {
         </Sider>
         <Content>
           {currentRoute.pageType === 'list' && (
-            <ListPageContent route={currentRoute} />
+            <ListPageContent route={currentRoute} updateRoute={updateRoute} />
           )}
         </Content>
       </Layout>

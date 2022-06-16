@@ -6,12 +6,20 @@ import CreateButtons from './CreateButtons';
 import styles from './index.less';
 
 export default function ListPageModal(props) {
-  const { content } = props;
+  const { content, onCancel, onOk } = props;
   const [searchFormColumns, setSearchFormColumns] = useState(
     content.searchFormColumns,
   );
   const [tableButtons, setTableButtons] = useState(content.tableButtons);
   const [tableColumns, setTableColumns] = useState(content.tableColumns);
+
+  const submit = () => {
+    onOk({
+      searchFormColumns,
+      tableButtons,
+      tableColumns,
+    });
+  };
 
   return (
     <div className={styles.listPage}>
@@ -39,8 +47,10 @@ export default function ListPageModal(props) {
         </div>
       </div>
       <div className="ant-modal-footer">
-        <Button>取 消</Button>
-        <Button type="primary">确 定</Button>
+        <Button onClick={onCancel}>取 消</Button>
+        <Button type="primary" onClick={submit}>
+          确 定
+        </Button>
       </div>
     </div>
   );
