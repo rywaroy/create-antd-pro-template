@@ -12,4 +12,5 @@ export default defineConfig({
     { path: '/detail/:name', component: '@/pages/ProjectDetail' },
   ],
   fastRefresh: {},
+  outputPath: './server/static',
 });

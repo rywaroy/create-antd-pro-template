@@ -6,7 +6,7 @@ import ListPageModal from './ListPageModal';
 import styles from './index.less';
 
 export default function ListPageContent(props) {
-  const { route, updateRoute } = props;
+  const { route, updateRoute, deleteRoute } = props;
 
   const { searchFormColumns, tableButtons, tableColumns } = route.content;
 
@@ -39,8 +39,15 @@ export default function ListPageContent(props) {
   return (
     <PageContainer content={route.name}>
       <div className={styles.listPageButtons}>
-        <Button type="primary" onClick={() => setListPageModalVisible(true)}>
+        <Button
+          type="primary"
+          style={{ marginRight: '10px' }}
+          onClick={() => setListPageModalVisible(true)}
+        >
           编辑
+        </Button>
+        <Button type="primary" danger onClick={deleteRoute}>
+          删除
         </Button>
       </div>
       <ProTable

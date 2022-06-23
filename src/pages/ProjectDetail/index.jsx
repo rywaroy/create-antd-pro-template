@@ -1,14 +1,20 @@
 import { useEffect, useState, useRef } from 'react';
-import { Layout, Button, message } from 'antd';
+import { Layout, Button, message, Modal } from 'antd';
 import {
   ModalForm,
   ProFormText,
   ProFormRadio,
   ProFormSelect,
 } from '@ant-design/pro-components';
-import { getProjectObject, getPageTypeData, setProjectObject } from '@/utils';
+import {
+  getProjectObject,
+  getPageTypeData,
+  setProjectObject,
+  findRoute,
+} from '@/utils';
 import Menu from './components/Menu';
 import ListPageContent from './components/ListPageContent';
+import { downLoadProjectApi } from '@/services';
 import styles from './index.less';
 
 const { Sider, Content, Header } = Layout;
@@ -42,20 +48,47 @@ export default function ProjectDetail(props) {
     newCurrentRoute.content = data;
     setCurrentRoute(newCurrentRoute);
     const newRoutes = [...routes];
-
-    const setRoute = (id, routes) => {
-      for (let i = 0; i < routes.length; i++) {
-        if (routes[i].id === id) {
-          routes[i].content = data;
-          break;
-        }
-        if (routes[i].routes) {
-          setRoute(id, routes[i].routes);
-        }
-      }
-    };
-    setRoute(currentRoute.id, newRoutes);
+    const route = findRoute(currentRoute.id, newRoutes);
+    route.content = data;
     setRoutes(newRoutes);
+  };
+
+  const deleteRoute = () => {
+    Modal.confirm({
+      title: '确认删除',
+      content: '确认删除该页面吗？',
+      okText: '确认',
+      cancelText: '取消',
+      onOk: () => {
+        const newRoutes = [...routes];
+        findRoute(currentRoute.id, newRoutes, (route, routes, i) => {
+          routes.splice(i, 1);
+        });
+        setRoutes(newRoutes);
+        setCurrentRoute({});
+      },
+    });
+  };
+
+  const downLoadProject = () => {
+    const name = props.match.params.name;
+    downLoadProjectApi({
+      name,
+      routes,
+    }).then((response) => {
+      const blob = new Blob([response.data], {
+        type: 'application/octet-stream',
+      });
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = name + '.zip';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      window.URL.revokeObjectURL(url);
+      a.remove();
+    });
   };
 
   useEffect(() => {
@@ -70,9 +103,18 @@ export default function ProjectDetail(props) {
       <Header>
         <div className={styles.top}>
           <h1 className={styles.title}>{title}</h1>
-          <Button type="primary" onClick={saveProject}>
-            保存
-          </Button>
+          <div>
+            <Button
+              type="primary"
+              onClick={saveProject}
+              style={{ marginRight: '10px' }}
+            >
+              保存
+            </Button>
+            <Button type="primary" onClick={downLoadProject}>
+              下载
+            </Button>
+          </div>
         </div>
       </Header>
       <Layout>
@@ -87,7 +129,11 @@ export default function ProjectDetail(props) {
         </Sider>
         <Content>
           {currentRoute.pageType === 'list' && (
-            <ListPageContent route={currentRoute} updateRoute={updateRoute} />
+            <ListPageContent
+              route={currentRoute}
+              updateRoute={updateRoute}
+              deleteRoute={deleteRoute}
+            />
           )}
         </Content>
       </Layout>
@@ -111,7 +157,7 @@ export default function ProjectDetail(props) {
             name,
           };
           if (type === 1) {
-            newRoute.component = `./${componentName}`;
+            newRoute.component = componentName;
             newRoute.content = getPageTypeData(pageType);
             newRoute.path = path;
             newRoute.pageType = pageType;

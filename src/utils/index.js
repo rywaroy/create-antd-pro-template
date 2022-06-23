@@ -32,3 +32,15 @@ export function getPageTypeData(type) {
     };
   }
 }
+
+export function findRoute(id, routes, callback = () => {}) {
+  for (let i = 0; i < routes.length; i++) {
+    if (routes[i].id === id) {
+      callback(routes[i], routes, i);
+      return routes[i];
+    }
+    if (routes[i].routes) {
+      setRoute(id, routes[i].routes);
+    }
+  }
+}
